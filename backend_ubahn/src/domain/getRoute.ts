@@ -1,4 +1,6 @@
 import { Line } from "./Line";
+import { findLineByStation } from "./utils/findLineByStation";
+import { findNextTransfer } from "./utils/findNextTransfer";
 
 export type RouteSegment = {
   /**
@@ -41,10 +43,45 @@ export type Route = RouteSegment[];
  *  }]
  * ```
  */
+
 export function getRoute(
   originStation: string,
   destinationStation: string,
   allLines: Line[]
-): Route {
-  throw new Error("to be implemented");
+) {
+  const startLine = findLineByStation(allLines, originStation);
+  const endLine = findLineByStation(allLines, destinationStation);
+
+  if (!startLine || !endLine) {
+    return [];
+  }
+
+  if (startLine.name === endLine.name) {
+    return [
+      { action: "enter", station: originStation, line: startLine },
+      { action: "exit", station: destinationStation, line: endLine },
+    ];
+  } else {
+    const route = [];
+    route.push({ action: "enter", station: originStation, line: startLine });
+
+    let currentLine = startLine;
+    let transferStation = originStation;
+
+    while (currentLine.name !== endLine.name) {
+      const nextTransfer = findNextTransfer(currentLine, endLine);
+      if (!nextTransfer) break;
+
+      route.push({
+        action: "switch",
+        station: nextTransfer.station,
+        line: nextTransfer.newLine,
+      });
+      currentLine = nextTransfer.newLine;
+      transferStation = nextTransfer.station;
+    }
+
+    route.push({ action: "exit", station: destinationStation, line: endLine });
+    return route;
+  }
 }
