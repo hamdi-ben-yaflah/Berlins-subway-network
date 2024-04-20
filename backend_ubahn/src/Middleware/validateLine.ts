@@ -9,14 +9,10 @@ export interface RequestWithLineData extends Request {
 export function validateLine(req: Request, res: Response, next: NextFunction) {
   const { line } = req.params;
 
-  const lineData = lines.find(
-    (l) => l.name.toLowerCase() === line.toLowerCase()
-  );
+  const lineData = lines.find((l) => l.name === line);
   if (!lineData) {
     return res.status(404).send({ error: "Line not found" });
   }
-  lineData.stations = lineData.stations.map((s) => s.toLowerCase());
-  lineData.name = lineData.name.toLowerCase();
 
   (req as RequestWithLineData).lineData = lineData;
   next();

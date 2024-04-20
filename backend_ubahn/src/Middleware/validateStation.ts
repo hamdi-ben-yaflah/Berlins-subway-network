@@ -8,9 +8,8 @@ export function validateStation(
 ) {
   const { station } = req.params;
   const { lineData } = req as RequestWithLineData;
-  const lowercaseStations = lineData.stations.map((s) => s.toLowerCase());
 
-  if (!lowercaseStations.includes(station.toLowerCase())) {
+  if (!lineData.stations.includes(station)) {
     return res.status(404).send({ error: "Station not found on this line" });
   }
 

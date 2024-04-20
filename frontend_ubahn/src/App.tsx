@@ -1,11 +1,11 @@
 import "./App.css";
-import LinesDummy from "./components/LinesDummy";
+import LinesList from "./components/LinesList";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <LinesDummy />
+    <div className='App'>
+      <header className='App-header'>
+        <LinesList />
       </header>
     </div>
   );

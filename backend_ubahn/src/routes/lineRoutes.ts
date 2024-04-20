@@ -32,13 +32,9 @@ router.get(
    */
   async function getAllLines(req, res) {
     try {
-      const responseItems = lines.map((line) => ({
-        name: line.name,
-        color: line.color,
-      }));
-      res.send(responseItems);
+      res.send(lines);
     } catch (error) {
-      res.status(500).send({ error: JSON.stringify(error) });
+      res.status(500).send((error as any).message);
     }
   }
 );
@@ -49,7 +45,7 @@ router.get("/routes", validateQueryParams(routeQuerySchema), (req, res) => {
     const route = getRoute(from, to, lines);
     res.send(route);
   } catch (error) {
-    res.status(500).send({ error: JSON.stringify(error) });
+    res.status(500).send((error as any).message);
   }
 });
 
@@ -58,7 +54,7 @@ router.get("/:line", validateLine, (req: Request, res: Response) => {
     const lineData = (req as RequestWithLineData).lineData;
     res.send(lineData.stations);
   } catch (error) {
-    res.status(500).send({ error: JSON.stringify(error) });
+    res.status(500).send((error as any).message);
   }
 });
 router.get(
@@ -76,7 +72,7 @@ router.get(
       const nextStops = getNextStops(lineData, direction!, n!, station);
       res.send(nextStops);
     } catch (error) {
-      res.status(500).send(error);
+      res.status(500).send((error as any).message);
     }
   }
 );
@@ -94,7 +90,7 @@ router.get(
       );
       res.send(accessibleLines);
     } catch (error) {
-      res.status(500).send({ error: JSON.stringify(error) });
+      res.status(500).send((error as any).message);
     }
   }
 );
