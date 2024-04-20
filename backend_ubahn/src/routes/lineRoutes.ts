@@ -1,5 +1,20 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { lines } from "../data";
+import { getAccessibleLines } from "../domain/getAccessibleLines";
+import { getNextStops } from "../domain/getNextStops";
+import { getRoute } from "../domain/getRoute";
+import {
+  NextStopsParams,
+  nextStopsParamsSchema,
+} from "../Middleware/schema/nextStopsParamsSchema";
+import {
+  RouteQuery,
+  routeQuerySchema,
+} from "../Middleware/schema/routeQuerySchema";
+import { RequestWithLineData, validateLine } from "../Middleware/validateLine";
+import { validateQueryParams } from "../Middleware/validateQueryParams";
+import { validateStation } from "../Middleware/validateStation";
+import { Direction } from "../domain/Direction";
 
 const router = express.Router();
 
@@ -16,33 +31,72 @@ router.get(
    * ```
    */
   async function getAllLines(req, res) {
-    const responseItems = lines.map((line) => ({
-      name: line.name,
-      color: line.color,
-    }));
-    res.send(responseItems);
+    try {
+      const responseItems = lines.map((line) => ({
+        name: line.name,
+        color: line.color,
+      }));
+      res.send(responseItems);
+    } catch (error) {
+      res.status(500).send({ error: JSON.stringify(error) });
+    }
+  }
+);
+
+router.get("/routes", validateQueryParams(routeQuerySchema), (req, res) => {
+  try {
+    const { from, to } = req.query as RouteQuery; // Cast to any here for demonstration
+    const route = getRoute(from, to, lines);
+    res.send(route);
+  } catch (error) {
+    res.status(500).send({ error: JSON.stringify(error) });
+  }
+});
+
+router.get("/:line", validateLine, (req: Request, res: Response) => {
+  try {
+    const lineData = (req as RequestWithLineData).lineData;
+    res.send(lineData.stations);
+  } catch (error) {
+    res.status(500).send({ error: JSON.stringify(error) });
+  }
+});
+router.get(
+  "/:line/stations/:station/next-stops",
+  [validateLine, validateStation, validateQueryParams(nextStopsParamsSchema)],
+  (req: Request, res: Response) => {
+    try {
+      const lineData = (req as RequestWithLineData).lineData;
+      const { station } = req.params;
+      const {
+        n = 3,
+        direction = Direction.Forward,
+      } = req.query as NextStopsParams;
+
+      const nextStops = getNextStops(lineData, direction!, n!, station);
+      res.send(nextStops);
+    } catch (error) {
+      res.status(500).send(error);
+    }
   }
 );
 
 router.get(
-  "/:id",
-  /**
-   * returns a specific line by id, e.g. `GET /lines/U8`
-   */
-  async function getLineById(req, res) {
-    // find the specific line by key
-    const requestedLineId = req.params.id;
-
-    const requestedLine = lines.find((line) => line.name === requestedLineId);
-    if (!requestedLine) {
-      res.sendStatus(404);
-      return;
+  "/:line/stations/:station/accessible-lines",
+  [validateLine, validateStation],
+  (req: Request, res: Response) => {
+    try {
+      const lineData = (req as RequestWithLineData).lineData;
+      const accessibleLines = getAccessibleLines(
+        lineData,
+        req.params.station,
+        lines
+      );
+      res.send(accessibleLines);
+    } catch (error) {
+      res.status(500).send({ error: JSON.stringify(error) });
     }
-
-    res.send(requestedLine);
   }
 );
-
-// TODO: add further routes here
 
 export const lineRoutes = router;
