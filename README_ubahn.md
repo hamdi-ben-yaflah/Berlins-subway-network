@@ -108,3 +108,69 @@ For an example on how the frontend _could_ look like, refer to [this rough scetc
 Here you can add your own notes and comments about the project.
 For example, what trade offs did you have to decide for? What would you have done differently if you had more time?
 What did you think of the tasks? Was it too much / too easy / too ambiguous?
+
+## Starting the Project with Docker
+
+This section provides instructions on how to build and run the backend and frontend of our project using Docker. This approach ensures that the environment is consistent and isolated, minimizing discrepancies in behavior due to different configurations.
+
+### Prerequisites
+
+To use these instructions, you must have Docker installed on your machine. If you do not have Docker installed, you can download and install it from [Docker's official website](https://www.docker.com/products/docker-desktop).
+
+### Building and Running the Backend
+
+1. **Navigate to the backend directory** where the Dockerfile is located:
+
+```sh
+   cd backend_ubahn
+```
+
+2. Build the Docker image for the backend.
+
+This will read the Dockerfile in the current directory, perform the necessary steps to build the image, and tag it as "backend":
+
+```sh
+   docker build -t backend .
+```
+
+3. Run the Docker container from the image.
+
+This command will start a container and map port 8080 on your host to port 8080 on the container:
+
+```sh
+   docker run -d -p 8080:8080 backend
+```
+
+After running this command, your backend should be accessible at http://localhost:8080.
+
+### Building and Running the Frontend
+
+1. **Navigate to the frontend directory** where the Dockerfile is located:
+
+```sh
+   cd frontend_ubahn
+```
+
+2. Build the Docker image for the frontend.
+
+This command builds the static files and sets up Nginx to serve them:
+
+```sh
+   docker build -t frontend .
+```
+
+3. Run the Docker container from the image.
+
+This command maps port 80 on your host to port 80 on the container:
+
+```sh
+   docker run -d -p 80:80 frontend
+```
+
+After running this command, your frontend should be accessible at http://localhost:80.
+
+## What could be improved:
+
+1. Adding components and e2e tests in the frontend.
+2. Adding integration tests for the endpoints.
+3. Properly implement the `routes` endpoint logic where we can build a graph based on the given data where each node represent a station with a weight (metrics such as travel time, distance, or even cost.) and then to find the best route from one stop to another, we could use algorithms such as: Dijkstra’s Algorithm: Finds the shortest path based on edge weight.
