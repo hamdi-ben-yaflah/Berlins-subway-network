@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  test:
+  Build:
     name: Test
     runs-on: ubuntu-latest
     steps:
@@ -17,10 +17,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-          cache: "npm"
       - name: Change to Frontend Directory
         run: cd frontend_ubahn
       - name: Install dependencies
-        run: npm ci
+        run: npm install --force
       - name: Build
         run: npm run build
