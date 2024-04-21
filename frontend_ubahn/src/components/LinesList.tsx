@@ -1,10 +1,9 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Line } from "../types/Line";
-import axios from "axios";
 import LineSelector from "./LineSelector";
-import StationList from "./StationList";
-import { on } from "events";
 import StationDetails from "./StationDetails";
+import StationList from "./StationList";
 
 /**
  * Fetches and lists the lines from the backend

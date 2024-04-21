@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run dev",
+    "start:prod": "node build/index.js",
     "test": "./node_modules/.bin/jest",
     "test-watch": "./node_modules/.bin/jest --watch",
-    "build": "./node_modules/.bin/tsc && npm run copy-files",
+    "copy-json": "cp src/data/lines.json build/data/lines.json",
+    "build": "tsc && npm run copy-json",
     "dev": "./node_modules/.bin/ts-node-dev --respawn ./src/index.ts"
   },
   "author": "",

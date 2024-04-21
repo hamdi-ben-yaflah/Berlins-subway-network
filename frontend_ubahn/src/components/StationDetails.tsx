@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { List, ListItem, ListItemText } from "@material-ui/core";
 import axios from "axios";
+import { useEffect, useState } from "react";
 import { Line } from "../types/Line";
-import { List, ListItem, ListItemText, makeStyles } from "@material-ui/core";
 
 type StationDetailsProps = {
   station: string;
