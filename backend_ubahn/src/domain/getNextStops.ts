@@ -31,12 +31,32 @@ export function getNextStops(
     throw new Error(`Station ${fromStation} not found on line ${line.name}.`);
   }
 
-  if (direction === Direction.Forward) {
-    return line.stations.slice(stationIndex + 1, stationIndex + 1 + nStops);
-  } else if (direction === Direction.Backward) {
-    const start = Math.max(0, stationIndex - nStops);
-    return line.stations.slice(start, stationIndex).reverse();
-  } else {
-    throw new Error("Invalid direction specified.");
+  if (line.type === LineType.Cyclic && direction === Direction.Backward) {
+    throw new Error("Backward direction is not supported for cyclic lines.");
   }
+
+  let nextStops: string[] = [];
+  switch (direction) {
+    case Direction.Forward:
+      if (line.type === LineType.Cyclic) {
+        for (let i = 1; i <= nStops; i++) {
+          let nextIndex = (stationIndex + i) % line.stations.length;
+          nextStops.push(line.stations[nextIndex]);
+        }
+      } else {
+        nextStops = line.stations.slice(
+          stationIndex + 1,
+          stationIndex + 1 + nStops
+        );
+      }
+      break;
+    case Direction.Backward:
+      const start = Math.max(0, stationIndex - nStops);
+      nextStops = line.stations.slice(start, stationIndex).reverse();
+      break;
+    default:
+      throw new Error(`Invalid direction: ${direction}`);
+  }
+
+  return nextStops;
 }
