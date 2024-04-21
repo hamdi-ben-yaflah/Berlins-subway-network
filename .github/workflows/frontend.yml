@@ -18,6 +18,8 @@ jobs:
         with:
           node-version: "18"
           cache: "npm"
+      - name: Change to Frontend Directory
+        run: cd frontend_ubahn
       - name: Install dependencies
         run: npm ci
       - name: Build
