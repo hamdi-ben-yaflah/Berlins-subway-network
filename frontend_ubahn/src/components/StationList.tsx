@@ -13,6 +13,7 @@ type StationListProps = {
 const useStyles = makeStyles({
   listItem: {
     backgroundColor: "#fff",
+    textAlign: "center",
     color: "#000",
     "&:hover": {
       backgroundColor: (props: StationListProps) => props.line.color,
@@ -25,7 +26,7 @@ function StationList(props: StationListProps) {
   const classes = useStyles(props);
 
   return (
-    <List component='nav' aria-label='main mailbox folders'>
+    <List component='nav'>
       {line.stations.map((station) => (
         <ListItem
           button

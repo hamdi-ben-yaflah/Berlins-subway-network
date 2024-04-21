@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Line } from "../types/Line";
+import { List, ListItem, ListItemText, makeStyles } from "@material-ui/core";
 
 type StationDetailsProps = {
   station: string;
@@ -40,23 +41,42 @@ function StationDetails({ station, line }: StationDetailsProps) {
       {accessibleLines.length > 0 ? (
         <>
           <h3>Accessible Lines from {station}:</h3>
-          <ul>
-            {accessibleLines.map((l) => (
-              <li key={l.name} style={{ color: l.color }}>
-                {l.name}
-              </li>
+
+          <List component='nav'>
+            {accessibleLines.map((line) => (
+              <ListItem
+                button
+                key={line.name}
+                style={{
+                  backgroundColor: line.color,
+                  color: "#fff",
+                  textAlign: "center",
+                }}>
+                <ListItemText primary={line.name} />
+              </ListItem>
             ))}
-          </ul>
+          </List>
         </>
       ) : null}
       {nextStops.length > 0 ? (
         <>
           <h3>Next 3 stops from {station}:</h3>
-          <ul>
+
+          <List component='nav'>
             {nextStops.map((stop) => (
-              <li key={stop}>{stop}</li>
+              <ListItem
+                button
+                key={stop}
+                style={{
+                  backgroundColor: "#fff",
+                  color: "#000",
+                  textAlign: "center",
+                  border: "1px solid #000",
+                }}>
+                <ListItemText primary={stop} />
+              </ListItem>
             ))}
-          </ul>
+          </List>
         </>
       ) : null}
     </div>
