@@ -9,6 +9,9 @@ on:
 jobs:
   Test-Build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend_ubahn
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -17,7 +20,7 @@ jobs:
         with:
           node-version: "18"
       - name: Install dependencies
-        run: npm indtall
+        run: npm install
       - name: Build
         run: npm run build
       - name: Unit tests

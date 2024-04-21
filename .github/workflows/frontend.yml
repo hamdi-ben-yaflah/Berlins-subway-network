@@ -10,6 +10,9 @@ jobs:
   Build:
     name: Test
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend_ubahn
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -17,8 +20,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-      - name: Change to Frontend Directory
-        run: cd frontend_ubahn
       - name: Install dependencies
         run: npm install --force
       - name: Build
